@@ -30,9 +30,9 @@ app.post('/sendLocation', function(request, response) {
   var lng = Number(request.body.lng);
   var date = new Date();
 
-  // if (!id || !lat || !lng) {
-  // 	return response.send({"error":"Something wrong with data"});
-  // }
+  if (!id || !lat || !lng) {
+  	return response.send({"error":"Something wrong with data"});
+  }
 
   console.log("id: " + id);
   console.log("lat: " +lat);
@@ -42,10 +42,14 @@ app.post('/sendLocation', function(request, response) {
   	id: id,
   	lat: lat,
   	lng: lng,
-  	date: date
+  	date: date,
+    coordinates: [
+      lng,
+      lat
+    ]
   }
 
-  // upsert user
+  // upsert user; initialize "infected" status to false on insert
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
       response.send();
   });
