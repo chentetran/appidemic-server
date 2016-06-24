@@ -61,7 +61,6 @@ app.post('/sendLocation', function(request, response) {
             response.send(nearbyUsersArr);
           }
         });
-      response.send();
   });
 
 });
