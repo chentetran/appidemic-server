@@ -46,7 +46,7 @@ app.post('/sendLocation', function(request, response) {
   }
 
   // upsert user
-  db.collection('users').update({id:id}, toInsert, {upsert: true}, function(err, result) {
+  db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
       response.send();
   });
 
