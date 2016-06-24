@@ -7,6 +7,7 @@ var server = "http://appidemic.herokuapp.com/";
 
 var app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // Required if we need to use HTTP query or post parameters
 
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://heroku_rms5cs1c:3om1mllrj4bhkqm13ojv3qc70@ds019480.mlab.com:19480/heroku_rms5cs1c';
 var MongoClient = require('mongodb').MongoClient, format = require('util').format;
@@ -29,9 +30,9 @@ app.post('/sendLocation', function(request, response) {
   var lng = Number(request.body.lng);
   var date = new Date();
 
-  if (!id || !lat || !lng) {
-  	return response.send({"error":"Something wrong with data"});
-  }
+  // if (!id || !lat || !lng) {
+  // 	return response.send({"error":"Something wrong with data"});
+  // }
 
   console.log("id: " + id);
   console.log("lat: " +lat);
@@ -46,7 +47,7 @@ app.post('/sendLocation', function(request, response) {
 
   // upsert user
   db.collection('users').update({id:id}, toInsert, {upsert: true}, function(err, result) {
-
+      response.send();
   });
 
 });
