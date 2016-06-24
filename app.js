@@ -55,13 +55,12 @@ app.post('/sendLocation', function(request, response) {
           $near: {
             $geometry: {type:"Point", coordinates:[lng, lat]}, $minDistance: 0, $maxDistance: 100}
           }
-        }.toArray(function(err, nearbyUsersArr) {
+        }).toArray(function(err, nearbyUsersArr) {
           if (err) { response.send(err); }
           else {
             response.send(nearbyUsersArr);
           }
-        })
-      );
+        });
       response.send();
   });
 
