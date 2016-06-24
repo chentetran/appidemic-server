@@ -16,7 +16,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 // homepage
 app.get('/', function(request, response) {
-	return response.send();
+	return response.send("hello");
 });
 
 app.post('/sendLocation', function(request, response) {
@@ -50,3 +50,5 @@ app.post('/sendLocation', function(request, response) {
   });
 
 });
+
+app.listen(process.env.PORT || 3000);
