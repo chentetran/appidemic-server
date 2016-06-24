@@ -60,8 +60,8 @@ app.post('/sendLocation', function(request, response) {
           else {
             response.send(nearbyUsersArr);
           }
-        });
-      })
+        })
+      });
       response.send();
   });
 
