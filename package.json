@@ -1,0 +1,27 @@
+{
+  "name": "appidemic",
+  "version": "0.1.5",
+  "description": "An augmented reality outbreak simulator",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "mongodb": "latest",
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": ""
+}
