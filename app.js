@@ -16,7 +16,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 // homepage
 app.get('/', function(request, response) {
-	return response.send("hello");
+	return response.send();
 });
 
 app.post('/sendLocation', function(request, response) {
@@ -29,7 +29,7 @@ app.post('/sendLocation', function(request, response) {
   var lng = Number(request.body.lng);
   var date = new Date();
 
-  if (!login || !lat || !lng) {
+  if (!id || !lat || !lng) {
   	return response.send({"error":"Something wrong with data"});
   }
 
