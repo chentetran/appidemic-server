@@ -38,10 +38,9 @@ app.post('/sendLocation', function(request, response) {
   console.log("lat: " +lat);
   console.log("lng: " + lng);
 
+  // order must be longitude, latitude
   var toInsert = {
   	id: id,
-  	lat: lat,
-  	lng: lng,
   	date: date,
     coordinates: [
       lng,
@@ -51,6 +50,18 @@ app.post('/sendLocation', function(request, response) {
 
   // upsert user; initialize "infected" status to false on insert
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
+      db.collection('users').find({
+        coordinates: {
+          $near: {
+            $geometry: {type:"Point", coordinates:[lng, lat]}, $minDistance: 0, $maxDistance: 100}
+          }
+        }.toArray(function(err, nearbyUsersArr) {
+          if (err) { response.send(err); }
+          else {
+            response.send(nearbyUsersArr);
+          }
+        });
+      })
       response.send();
   });
 
