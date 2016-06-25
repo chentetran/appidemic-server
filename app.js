@@ -122,7 +122,6 @@ function infectOthers(lng, lat) {
   console.log('infect others()')
   db.collection('users', function(err, userCursor) {
     userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
-      console.log(result);
       userCursor.updateMany(
         {$geometry:
           {
@@ -137,10 +136,7 @@ function infectOthers(lng, lat) {
           }
         },
         {
-          $set: {infected: true}
-        },
-        function(err, result) {
-          console.log("Infected people!");
+          $set: {poop: true}
         }
       );
     });
