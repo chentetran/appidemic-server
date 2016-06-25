@@ -66,8 +66,8 @@ app.post('/sendLocation', function(request, response) {
     //     getInfected();
     //     response.send();
     //   }
+    // });
     response.send();
-    });
     // if (err) {response.send('error1');}
     // else {
     //   db.collection('users', function(err, cursor) {
