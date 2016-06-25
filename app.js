@@ -7,7 +7,7 @@ var server = "http://appidemic.herokuapp.com/";
 
 var app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // Required if we need to use HTTP query or post parameters
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://heroku_rms5cs1c:3om1mllrj4bhkqm13ojv3qc70@ds019480.mlab.com:19480/heroku_rms5cs1c';
 var MongoClient = require('mongodb').MongoClient, format = require('util').format;
@@ -94,39 +94,14 @@ app.post('/sendLocation', function(request, response) {
                 }
               }
               if (numInfected === 0) {      // case 1
-                return response.send("You didn't infect anyone");
-              } else {
+                return response.send({result:1, message:"You didn't infect anyone"});
+              } else {                      // case 2
                 // TODO: add numInfected as an entry in the user doc on DB
-                return response.send("You infected " + numInfected + " people");
+                return response.send({result:2, message:"You infected " + numInfected + " people", numInfected:numInfected});
               }
             });
           });
         });
-        // db.collection('users', function(err, userCursor) {
-        //   userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
-        //     userCursor.update(
-        //       {geometry:
-        //         {
-        //           $near: {
-        //             $geometry: {
-        //               type: "Point",
-        //               coordinates: [lng, lat]
-        //             },
-        //             $minDistance: 0,
-        //             $maxDistance: radius
-        //           }
-        //         }
-        //       },
-        //       {
-        //         $set: {"infected": true}
-        //       },
-        //       { multi: true },
-        //       function(err, res) {
-        //         response.send("Infected someone or not maybe");
-        //       }
-        //     );
-        //   });
-        // });
       } else {
         db.collection('users', function(err, userCursor) {
           userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
@@ -145,10 +120,10 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (usersNearbyArr[i].infected) {
                   userCursor.update({id:id}, {$set: {infected: true}});
-                  return response.send("You were infected");
+                  return response.send({result:3, message:"You were infected"}); // case 3
                 }
               }
-              return response.send("You are still healthy");
+              return response.send({result:4, message:"You are still healthy"}); // case 4
             });
           });
         });
