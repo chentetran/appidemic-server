@@ -23,6 +23,26 @@ app.get('/', function(request, response) {
 	return response.send();
 });
 
+app.get('/getStatus', function(request, response) {
+  // allow cross-origin resource sharing
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  var id = request.body.id;
+  if (!id) return response.send({"Error":"Missing ID"});
+
+  db.collection('users').findAndModify(
+    {id:id},
+    {$setOnInsert: {infected:false}},
+    {new: true, upsert: true},
+    function(err, doc) {
+      console.log(doc);
+    }
+  );
+
+  return response.send();
+});
+
 app.post('/sendLocation', function(request, response) {
 	// allow cross-origin resource sharing
   response.header("Access-Control-Allow-Origin", "*");
@@ -34,7 +54,7 @@ app.post('/sendLocation', function(request, response) {
   var date = new Date();
 
   if (!id || !lat || !lng) {
-  	return response.send({"error":"Something wrong with data"});
+  	return response.send({"Error":"Missing ID or coordinates"});
   }
 
   console.log("id: " + id);
