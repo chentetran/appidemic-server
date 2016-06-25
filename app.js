@@ -61,7 +61,6 @@ app.post('/sendLocation', function(request, response) {
 
 
 
-      // TODO:
       // Four cases:
       // 1. User is infected and infected nobody
       // 2. User is infected and infected people. Get a count.
@@ -73,9 +72,9 @@ app.post('/sendLocation', function(request, response) {
       // Check user's infection status
       if (user[0].infected) {
         db.collection('users', function(err, userCursor) {
-          userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
-            userCursor.update(
-              {geometry:
+          userCursor.createIndex({geometry:'2dsphere'}, function(err, res) {
+            db.collection('users').find({
+              geometry:
                 {
                   $near: {
                     $geometry: {
@@ -86,17 +85,48 @@ app.post('/sendLocation', function(request, response) {
                     $maxDistance: radius
                   }
                 }
-              },
-              {
-                $set: {"infected": true}
-              },
-              { multi: true },
-              function(err, res) {
-                response.send("Infected someone or not maybe");
+            }).toArray(function(err, usersNearbyArr) {
+              var numInfected = 0;
+              for (var i=0; i < usersNearbyArr.length; i++) {
+                if (!usersNearbyArr[i].infected) { // user is healthy -> infect them
+                  numInfected++;
+                  db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true}});
+                }
               }
-            );
+              if (numInfected === 0) {      // case 1
+                return response.send("You didn't infect anyone");
+              } else {
+                // TODO: add numInfected as an entry in the user doc on DB
+                return response.send("You infected " + numInfected + " people");
+              }
+            });
           });
         });
+        // db.collection('users', function(err, userCursor) {
+        //   userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
+        //     userCursor.update(
+        //       {geometry:
+        //         {
+        //           $near: {
+        //             $geometry: {
+        //               type: "Point",
+        //               coordinates: [lng, lat]
+        //             },
+        //             $minDistance: 0,
+        //             $maxDistance: radius
+        //           }
+        //         }
+        //       },
+        //       {
+        //         $set: {"infected": true}
+        //       },
+        //       { multi: true },
+        //       function(err, res) {
+        //         response.send("Infected someone or not maybe");
+        //       }
+        //     );
+        //   });
+        // });
       } else {
         db.collection('users', function(err, userCursor) {
           userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
