@@ -59,10 +59,6 @@ app.post('/sendLocation', function(request, response) {
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
     if (err) {response.send('error1');}
     else {
-
-      // Save user's infection status
-      console.log("result is " + result );
-
       db.collection('users', function(err, cursor) {
         if (err) {response.send('error2');}
         else {
@@ -84,9 +80,12 @@ app.post('/sendLocation', function(request, response) {
                 if (err) response.send('error4');
 
                 // Search through nearbyUsersArr for infection
-                else { 
+                else {
+                  // Get user's infection status
+                  db.collection('users').find({id:id}, function(err, user) {
+                    console.log(user);
+                  });
 
-                  response.send();
                 }
               });
             }
