@@ -23,7 +23,7 @@ app.get('/', function(request, response) {
 	return response.send();
 });
 
-app.get('/getStatus', function(request, response) {
+app.post('/getStatus', function(request, response) {
   // allow cross-origin resource sharing
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -37,10 +37,10 @@ app.get('/getStatus', function(request, response) {
     {new: true, upsert: true},
     function(err, doc) {
       console.log(doc);
+
+      return response.send(doc);
     }
   );
-
-  return response.send();
 });
 
 app.post('/sendLocation', function(request, response) {
