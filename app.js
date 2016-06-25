@@ -57,43 +57,92 @@ app.post('/sendLocation', function(request, response) {
   // Initializes "infected" to false if inserted
   // Searches for other users within var radius
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
-    if (err) {response.send('error1');}
-    else {
-      db.collection('users', function(err, cursor) {
-        if (err) {response.send('error2');}
-        else {
-          cursor.createIndex({'geometry':'2dsphere'}, function(err, index) {
-            if (err) {response.send('error3');}
-            else {
-              cursor.find({geometry:
-                {
-                  $near: {
-                    $geometry: {
-                      type: "Point",
-                      coordinates: [lng, lat]
-                    },
-                    $minDistance: 0,
-                    $maxDistance: radius
-                  }
-                }
-              }).toArray(function(err, nearbyUsersArr) {
-                if (err) response.send('error4');
+    result.toArray(function(err, user) {
+      // Check user's infection status
+      if (user[0].infected) {
+        infectOthers(lng, lat)
+        response.send("You've infected someone");
+      } else {
+        getInfected();
+        response.send("You've been infected!");
+      }
+    });
+    // if (err) {response.send('error1');}
+    // else {
+    //   db.collection('users', function(err, cursor) {
+    //     if (err) {response.send('error2');}
+    //     else {
+    //       cursor.createIndex({'geometry':'2dsphere'}, function(err, index) {
+    //         if (err) {response.send('error3');}
+    //         else {
+    //           cursor.find({geometry:
+    //             {
+    //               $near: {
+    //                 $geometry: {
+    //                   type: "Point",
+    //                   coordinates: [lng, lat]
+    //                 },
+    //                 $minDistance: 0,
+    //                 $maxDistance: radius
+    //               }
+    //             }
+    //           }, function(err, nearbyUsersCursor) {
+    //             nearbyUsersCursor.toArray(function(err, nearbyUsersArr) {
+    //               if (err) response.send('error4');
 
-                // Search through nearbyUsersArr for infection
-                else {
-                  // Get user's infection status
-                  db.collection('users').find({id:id}).toArray(function(err, user) {
-                    console.log(user);
-                  });
+    //               // Search through nearbyUsersArr for infection
+    //               else {
+    //                 // Get user's infection status
+    //                 db.collection('users').find({id:id}).toArray(function(err, user) {
+    //                   var infected = user[0].infected;
 
-                }
-              });
-            }
-          });
-        }
-      });
-    }
+    //                   // 1. User is infected
+    //                   if (infected) {
+    //                     // Loop through nearbyUsersArr to spread infection
+                        
+    //                   }
+
+
+    //                   // 2. User isn't infected
+                      
+    //                 });
+
+    //               }
+    //             });
+    //           });
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
   });
 });
+
+function infectOthers(lng, lat) {
+  db.collection('users', function(err, userCursor) {
+    userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
+      userCursor.updateMany(
+        {$geometry:
+          {
+            $near: {
+              $geometry: {
+                type: "Point",
+                coordinates: [lng, lat]
+              },
+              $minDistance: 0,
+              $maxDistance: radius
+            }
+          }
+        },
+        {
+          $set: {infected: true}
+        },
+        function(err, result) {
+          console.log("Infected people!");
+        }
+      );
+    });
+  });
+}
 
 app.listen(process.env.PORT || 3000);
