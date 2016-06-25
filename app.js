@@ -57,17 +57,16 @@ app.post('/sendLocation', function(request, response) {
   // Initializes "infected" to false if inserted
   // Searches for other users within var radius
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
-    // db.collection('users').find({id:id}).toArray(function(err, user) {
-    //   // Check user's infection status
-    //   if (user[0].infected) {
-    //     infectOthers(lng, lat)
-    //     response.send();
-    //   } else {
-    //     getInfected();
-    //     response.send();
-    //   }
-    // });
-    response.send();
+    db.collection('users').find({id:id}).toArray(function(err, user) {
+      // Check user's infection status
+      if (user[0].infected) {
+        infectOthers(lng, lat)
+        response.send();
+      } else {
+        getInfected();
+        response.send();
+      }
+    });
     // if (err) {response.send('error1');}
     // else {
     //   db.collection('users', function(err, cursor) {
