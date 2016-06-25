@@ -52,7 +52,7 @@ app.post('/sendLocation', function(request, response) {
   var date = new Date();
 
   if (!id || !lat || !lng) {
-  	return response.send({"Error":"Missing ID or coordinates"});
+  	return response.send({result:5, message: "Missing information"});
   }
 
   console.log("id: " + id);
