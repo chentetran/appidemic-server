@@ -57,7 +57,7 @@ app.post('/sendLocation', function(request, response) {
   // Initializes "infected" to false if inserted
   // Searches for other users within var radius
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
-    result.toArray(function(err, user) {
+    db.collection('users').find({id:id}).toArray(function(err, user) {
       // Check user's infection status
       if (user[0].infected) {
         infectOthers(lng, lat)
