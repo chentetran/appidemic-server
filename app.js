@@ -34,10 +34,10 @@ app.post('/checkInfection', function(request, response) {
   db.collection('users').find({id:id}).toArray(function(err, userArr) {
     if (userArr.length === 0) {
       return response.send({status:0, message:"User not in database yet"});
-    } 
-    if (userArr[0].infected == true) {
-      return response.send({status:1, message:"You are infected"});
     }
+    var infected = userArr[0].infected;
+    if (!infected) return response.send({status:1, message:"You are not infected"}); 
+    if (infected) return response.send({status:2, message:"You are infected"});
   });
 });
 
