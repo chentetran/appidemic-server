@@ -50,19 +50,47 @@ app.post('/sendLocation', function(request, response) {
 
   // upsert user; initialize "infected" status to false on insert
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
-      db.collection('users').find({
-        coordinates: {
-          $near: {
-            $geometry: {type:"Point", coordinates:[lng, lat]}, $minDistance: 0, $maxDistance: 100}
-          }
-        }).toArray(function(err, nearbyUsersArr) {
-          if (err) { response.send(err); }
-          else {
-            response.send(nearbyUsersArr);
-          }
-        });
+    if (err) {response.send('error1');}
+    else {
+      db.collection('users', function(err, cursor) {
+        if (err) {response.send('error2');}
+        else {
+          cursor.createIndex({'geometry':'2dsphere'}, function(err, index) {
+            if (err) {response.send('error3');}
+            else {
+              cursor.find({geometry:
+                {
+                  $near: {
+                    $geometry: {
+                      type: "Point",
+                      coordinates: [lng, lat]
+                    },
+                    $minDistance: 0,
+                    $maxDistance: 1500
+                  }
+                }
+              }).toArray(function(err, nearbyUsersArr) {
+                if (err) response.send('error4');
+                else response.send(nearbyUsersArr);
+              });
+            }
+          });
+        }
+      });
+    }
   });
 
 });
+      // db.collection('users').find({
+      //   point: {
+      //     $near: {
+      //       $geometry: {type:"Point", coordinates:[lng, lat]}, $minDistance: 0, $maxDistance: 100}
+      //     }
+      //   }).toArray(function(err, nearbyUsersArr) {
+      //     if (err) { response.send(err); }
+      //     else {
+      //       response.send(nearbyUsersArr);
+      //     }
+      //   });
 
 app.listen(process.env.PORT || 3000);
