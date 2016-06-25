@@ -42,11 +42,13 @@ app.post('/sendLocation', function(request, response) {
   var toInsert = {
   	id: id,
   	date: date,
-    coordinates: [
-      lng,
-      lat
-    ]
-  }
+    geometry: {
+      type: "Point",
+      coordinates: [
+        lng, lat
+      ]
+    }
+  };
 
   // upsert user; initialize "infected" status to false on insert
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
