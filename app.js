@@ -136,7 +136,7 @@ function infectOthers(lng, lat) {
           }
         },
         {
-          $set: {poop: true}
+          $set: {"infected": true}
         },
         { multi: true }
       );
