@@ -123,7 +123,7 @@ function infectOthers(lng, lat) {
   db.collection('users', function(err, userCursor) {
     userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
       userCursor.update(
-        {$geometry:
+        {geometry:
           {
             $near: {
               $geometry: {
