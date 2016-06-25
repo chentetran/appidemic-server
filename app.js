@@ -92,7 +92,7 @@ app.post('/sendLocation', function(request, response) {
               },
               { multi: true },
               function(err, res) {
-                response.send(0);
+                response.send("Infected someone or not maybe");
               }
             );
           });
@@ -115,10 +115,10 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (usersNearbyArr[i].infected) {
                   userCursor.update({id:id}, {$set: {infected: true}});
-                  return response.send(3);
+                  return response.send("You were infected");
                 }
               }
-              return response.send(4);
+              return response.send("You are still healthy");
             });
           });
         });
