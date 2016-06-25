@@ -15,6 +15,9 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
   db = databaseConnection;
 });
 
+// radius of infection in meters
+var radius = 100;
+
 // homepage
 app.get('/', function(request, response) {
 	return response.send();
@@ -50,10 +53,16 @@ app.post('/sendLocation', function(request, response) {
     }
   };
 
-  // upsert user; initialize "infected" status to false on insert
+  // Insert or update user location
+  // Initializes "infected" to false if inserted
+  // Searches for other users within var radius
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
     if (err) {response.send('error1');}
     else {
+
+      // Save user's infection status
+      console.log("result is " + result );
+
       db.collection('users', function(err, cursor) {
         if (err) {response.send('error2');}
         else {
@@ -68,12 +77,17 @@ app.post('/sendLocation', function(request, response) {
                       coordinates: [lng, lat]
                     },
                     $minDistance: 0,
-                    $maxDistance: 100
+                    $maxDistance: radius
                   }
                 }
               }).toArray(function(err, nearbyUsersArr) {
                 if (err) response.send('error4');
-                else response.send(nearbyUsersArr);
+
+                // Search through nearbyUsersArr for infection
+                else { 
+
+                  response.send();
+                }
               });
             }
           });
@@ -81,18 +95,6 @@ app.post('/sendLocation', function(request, response) {
       });
     }
   });
-
 });
-      // db.collection('users').find({
-      //   point: {
-      //     $near: {
-      //       $geometry: {type:"Point", coordinates:[lng, lat]}, $minDistance: 0, $maxDistance: 100}
-      //     }
-      //   }).toArray(function(err, nearbyUsersArr) {
-      //     if (err) { response.send(err); }
-      //     else {
-      //       response.send(nearbyUsersArr);
-      //     }
-      //   });
 
 app.listen(process.env.PORT || 3000);
