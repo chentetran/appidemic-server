@@ -23,7 +23,7 @@ app.get('/', function(request, response) {
 	return response.send();
 });
 
-app.post('/getStatus', function(request, response) {
+app.post('/checkInfection', function(request, response) {
   // allow cross-origin resource sharing
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -31,12 +31,13 @@ app.post('/getStatus', function(request, response) {
   var id = request.body.id;
   if (!id) return response.send({"Error":"Missing ID"});
 
-  db.collection('users').findAndModify(
-    {id:id},
-    {$setOnInsert: {infected:false}},
-    {new: true, upsert: true}
-  ).toArray(function(err, userArr) {
-    console.log(userArr);
+  db.collection('users').find({id:id}).toArray(function(err, userArr) {
+    if (userArr.length === 0) {
+      return response.send({status:0, message:"User not in database yet"});
+    } 
+    if (userArr[0].infected == true) {
+      return response.send({status:1, message:"You are infected"});
+    }
   });
 });
 
