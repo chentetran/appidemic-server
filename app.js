@@ -34,13 +34,10 @@ app.post('/getStatus', function(request, response) {
   db.collection('users').findAndModify(
     {id:id},
     {$setOnInsert: {infected:false}},
-    {new: true, upsert: true},
-    function(err, doc) {
-      console.log(doc);
-
-      return response.send(doc);
-    }
-  );
+    {new: true, upsert: true}
+  ).toArray(function(err, userArr) {
+    console.log(userArr);
+  });
 });
 
 app.post('/sendLocation', function(request, response) {
