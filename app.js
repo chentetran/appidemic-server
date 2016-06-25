@@ -82,7 +82,7 @@ app.post('/sendLocation', function(request, response) {
                 // Search through nearbyUsersArr for infection
                 else {
                   // Get user's infection status
-                  db.collection('users').find({id:id}, function(err, user) {
+                  db.collection('users').find({id:id}).toArray(function(err, user) {
                     console.log(user);
                   });
 
