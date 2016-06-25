@@ -58,6 +58,18 @@ app.post('/sendLocation', function(request, response) {
   // Searches for other users within var radius
   db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
     db.collection('users').find({id:id}).toArray(function(err, user) {
+
+
+
+      // TODO:
+      // Four cases:
+      // 1. User is infected and infected nobody
+      // 2. User is infected and infected people. Get a count.
+      // 3. User is healthy and got infected. V
+      // 4. User is healthy and didn't get infected. V
+
+
+
       // Check user's infection status
       if (user[0].infected) {
         db.collection('users', function(err, userCursor) {
@@ -80,7 +92,7 @@ app.post('/sendLocation', function(request, response) {
               },
               { multi: true },
               function(err, res) {
-                response.send("You've infected someone");
+                response.send(0);
               }
             );
           });
@@ -103,67 +115,16 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (usersNearbyArr[i].infected) {
                   userCursor.update({id:id}, {$set: {infected: true}});
-                  return response.send("You've been infected");
+                  return response.send(3);
                 }
               }
+              return response.send(4);
             });
           });
         });
       }
     });
-    // if (err) {response.send('error1');}
-    // else {
-    //   db.collection('users', function(err, cursor) {
-    //     if (err) {response.send('error2');}
-    //     else {
-    //       cursor.createIndex({'geometry':'2dsphere'}, function(err, index) {
-    //         if (err) {response.send('error3');}
-    //         else {
-    //           cursor.find({geometry:
-    //             {
-    //               $near: {
-    //                 $geometry: {
-    //                   type: "Point",
-    //                   coordinates: [lng, lat]
-    //                 },
-    //                 $minDistance: 0,
-    //                 $maxDistance: radius
-    //               }
-    //             }
-    //           }, function(err, nearbyUsersCursor) {
-    //             nearbyUsersCursor.toArray(function(err, nearbyUsersArr) {
-    //               if (err) response.send('error4');
-
-    //               // Search through nearbyUsersArr for infection
-    //               else {
-    //                 // Get user's infection status
-    //                 db.collection('users').find({id:id}).toArray(function(err, user) {
-    //                   var infected = user[0].infected;
-
-    //                   // 1. User is infected
-    //                   if (infected) {
-    //                     // Loop through nearbyUsersArr to spread infection
-                        
-    //                   }
-
-
-    //                   // 2. User isn't infected
-                      
-    //                 });
-
-    //               }
-    //             });
-    //           });
-    //         }
-    //       });
-    //     }
-    //   });
-    // }
   });
 });
-
-function getInfected() {
-
-}
 
 app.listen(process.env.PORT || 3000);
