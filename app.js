@@ -60,11 +60,55 @@ app.post('/sendLocation', function(request, response) {
     db.collection('users').find({id:id}).toArray(function(err, user) {
       // Check user's infection status
       if (user[0].infected) {
-        infectOthers(lng, lat)
-        response.send();
+        db.collection('users', function(err, userCursor) {
+          userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
+            userCursor.update(
+              {geometry:
+                {
+                  $near: {
+                    $geometry: {
+                      type: "Point",
+                      coordinates: [lng, lat]
+                    },
+                    $minDistance: 0,
+                    $maxDistance: radius
+                  }
+                }
+              },
+              {
+                $set: {"infected": true}
+              },
+              { multi: true },
+              function(err, res) {
+                response.send("You've infected someone");
+              }
+            );
+          });
+        });
       } else {
-        getInfected();
-        response.send();
+        db.collection('users', function(err, userCursor) {
+          userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
+            userCursor.find({geometry:
+              {
+                $near: {
+                  $geometry: {
+                    type: "Point",
+                    coordinates: [lng, lat]
+                  },
+                  $minDistance: 0,
+                  $maxDistance: radius
+                }
+              }
+            }).toArray(function(err, usersNearbyArr) {
+              for (var i=0; i < usersNearbyArr.length; i++) {
+                if (nearbyUsersArr[i].infected) {
+                  userCursor.update({id:id}, {$set: {infected: true}});
+                  return response.send("You've been infected");
+                }
+              }
+            });
+          });
+        });
       }
     });
     // if (err) {response.send('error1');}
@@ -118,30 +162,8 @@ app.post('/sendLocation', function(request, response) {
   });
 });
 
-function infectOthers(lng, lat) {
-  console.log('infect others()')
-  db.collection('users', function(err, userCursor) {
-    userCursor.createIndex({geometry:'2dsphere'}, function(err, result) {
-      userCursor.update(
-        {geometry:
-          {
-            $near: {
-              $geometry: {
-                type: "Point",
-                coordinates: [lng, lat]
-              },
-              $minDistance: 0,
-              $maxDistance: radius
-            }
-          }
-        },
-        {
-          $set: {"infected": true}
-        },
-        { multi: true }
-      );
-    });
-  });
+function getInfected() {
+  
 }
 
 app.listen(process.env.PORT || 3000);
