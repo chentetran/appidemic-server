@@ -138,7 +138,11 @@ function infectOthers(lng, lat) {
         {
           $set: {"infected": true}
         },
-        { multi: true }
+        { multi: true }, function(err, res) {
+          userCursor.toArray(function(e, r) {
+            console.log(r);
+          });
+        }
       );
     });
   });
