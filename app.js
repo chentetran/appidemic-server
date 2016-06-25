@@ -68,7 +68,7 @@ app.post('/sendLocation', function(request, response) {
                       coordinates: [lng, lat]
                     },
                     $minDistance: 0,
-                    $maxDistance: 1500
+                    $maxDistance: 100
                   }
                 }
               }).toArray(function(err, nearbyUsersArr) {
