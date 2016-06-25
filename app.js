@@ -101,7 +101,7 @@ app.post('/sendLocation', function(request, response) {
               }
             }).toArray(function(err, usersNearbyArr) {
               for (var i=0; i < usersNearbyArr.length; i++) {
-                if (nearbyUsersArr[i].infected) {
+                if (usersNearbyArr[i].infected) {
                   userCursor.update({id:id}, {$set: {infected: true}});
                   return response.send("You've been infected");
                 }
@@ -163,7 +163,7 @@ app.post('/sendLocation', function(request, response) {
 });
 
 function getInfected() {
-  
+
 }
 
 app.listen(process.env.PORT || 3000);
