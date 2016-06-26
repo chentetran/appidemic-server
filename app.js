@@ -8,6 +8,7 @@ var server = "http://appidemic.herokuapp.com/";
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public')); //serve static content
 
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://heroku_rms5cs1c:3om1mllrj4bhkqm13ojv3qc70@ds019480.mlab.com:19480/heroku_rms5cs1c';
 var MongoClient = require('mongodb').MongoClient, format = require('util').format;
@@ -20,7 +21,8 @@ var radius = 100;
 
 // homepage
 app.get('/', function(request, response) {
-	return response.send();
+	response.set('Content-Type', 'text/html');
+  return response.sendFile(__dirname + '/public/index.html');
 });
 
 app.post('/checkInfection', function(request, response) {
@@ -115,7 +117,7 @@ app.post('/sendLocation', function(request, response) {
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
                 // TODO: add numInfected as an entry in the user doc on DB
-                return response.send({result:2, message:"You infected " + numInfected + " people", numInfected:numInfected});
+                return response.send({result:2, message:"You infected " + numInfected + " people!", numInfected:numInfected});
               }
             });
           });
@@ -138,7 +140,7 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (usersNearbyArr[i].infected) {
                   userCursor.update({id:id}, {$set: {infected: true}});
-                  return response.send({result:3, message:"You were infected"}); // case 3
+                  return response.send({result:3, message:"You were infected!"}); // case 3
                 }
               }
               return response.send({result:4, message:"You are still healthy"}); // case 4
