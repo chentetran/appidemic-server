@@ -1,6 +1,6 @@
 var lat = 0;
 var lng = 0;
-var request = new XMLHttpRequest();
+// var request = new XMLHttpRequest();
 var me = new google.maps.LatLng(lat, lng);
 var infowindow = new google.maps.InfoWindow();
 var map;
@@ -12,70 +12,70 @@ var options = {
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 			  };
 
-request.open("POST", "https://pumpkin-tart-22013.herokuapp.com/sendLocation", true);
-request.onreadystatechange = parse;
+// request.open("POST", "https://pumpkin-tart-22013.herokuapp.com/sendLocation", true);
+// request.onreadystatechange = parse;
 
-function parse()
-{
-	if (request.readyState == 4 && request.status == 200) {
-		messageData = JSON.parse(request.responseText);
-		render_others();
-		render_landmarks();
-		renderMap();
-	}
-	else if (request.readyState == 4 && request.status != 200) {
-		alert("Request status not good!")
-	}
-}
+// function parse()
+// {
+// 	if (request.readyState == 4 && request.status == 200) {
+// 		messageData = JSON.parse(request.responseText);
+// 		render_others();
+// 		render_landmarks();
+// 		renderMap();
+// 	}
+// 	else if (request.readyState == 4 && request.status != 200) {
+// 		alert("Request status not good!")
+// 	}
+// }
 
-function render_others()
-{
-	img = 'TwoD.png';
-	for (var i = 0; i < messageData["people"].length; i++) {
-		name = messageData['people'][i]["login"]
-		_lat = messageData["people"][i]["lat"];
-		_lng = messageData["people"][i]["lng"];
-		pos = new google.maps.LatLng(_lat,_lng);
-		marker = new google.maps.Marker({
-			position: pos,
-			title: name,
-			icon: img
-		});
-		marker.content = "<b>" + name + "</b></br>" + haversine(_lat,_lng) + " miles away";
+// function render_others()
+// {
+// 	img = 'TwoD.png';
+// 	for (var i = 0; i < messageData["people"].length; i++) {
+// 		name = messageData['people'][i]["login"]
+// 		_lat = messageData["people"][i]["lat"];
+// 		_lng = messageData["people"][i]["lng"];
+// 		pos = new google.maps.LatLng(_lat,_lng);
+// 		marker = new google.maps.Marker({
+// 			position: pos,
+// 			title: name,
+// 			icon: img
+// 		});
+// 		marker.content = "<b>" + name + "</b></br>" + haversine(_lat,_lng) + " miles away";
 
-		marker.setMap(map);
+// 		marker.setMap(map);
 
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(this.content);
-			infowindow.open(this.getMap(), this);
-		});
-	}
-}
+// 		google.maps.event.addListener(marker, 'click', function() {
+// 			infowindow.setContent(this.content);
+// 			infowindow.open(this.getMap(), this);
+// 		});
+// 	}
+// }
 
-function render_landmarks()
-{	
-	img = 'chipmarker.png'
-	for (var i = 0; i < messageData['landmarks'].length; i++) {
-		details = messageData['landmarks'][i]['properties']['Details'];
+// function render_landmarks()
+// {	
+// 	img = 'chipmarker.png'
+// 	for (var i = 0; i < messageData['landmarks'].length; i++) {
+// 		details = messageData['landmarks'][i]['properties']['Details'];
 		
-		pos = messageData['landmarks'][i]['geometry']['coordinates'];
+// 		pos = messageData['landmarks'][i]['geometry']['coordinates'];
 
-		pos = new google.maps.LatLng(pos[1],pos[0]);
+// 		pos = new google.maps.LatLng(pos[1],pos[0]);
 
-		marker = new google.maps.Marker({
-			position: pos,
-			icon: img
-		});
-		marker.content = details;
+// 		marker = new google.maps.Marker({
+// 			position: pos,
+// 			icon: img
+// 		});
+// 		marker.content = details;
 
-		marker.setMap(map);
+// 		marker.setMap(map);
 
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(this.content);
-			infowindow.open(this.getMap(), this);
-		});
-	}
-}
+// 		google.maps.event.addListener(marker, 'click', function() {
+// 			infowindow.setContent(this.content);
+// 			infowindow.open(this.getMap(), this);
+// 		});
+// 	}
+// }
 
 
 function init()
@@ -92,13 +92,12 @@ function getMyLocation() {
 			function(position) {
 				lat = position.coords.latitude;
 				lng = position.coords.longitude;
-				// renderMap();
-				request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				request.send("login=IGNACIO_BOWMAN&lat=" + lat + "&lng=" + lng);
+				// request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				// request.send("login=IGNACIO_BOWMAN&lat=" + lat + "&lng=" + lng);
 			});
 	}
 	else {
-		alert("Your browser sucks. Download Chrome.")
+		alert("Download Chrome.")
 	}
 };
 
@@ -107,76 +106,55 @@ function renderMap()
 	me = new google.maps.LatLng(lat, lng);
 
 	map.panTo(me);
-	img = 'ASpades.jpg';
 	marker = new google.maps.Marker({
-		position: me,
-		icon: img
+		position: me
 	});
-	var closest = closestLandmark();
-	marker.content = "<p align='center'>You are here</br>(IGNACIO_BOWMAN)</p></br><b>Closest landmark: </b>" + closest[0]['properties']['Location_Name'] + "</br><b>Distance: </b>" + closest[1] + " miles away";
 	marker.setMap(map);
 
 	google.maps.event.addListener(marker, 'click', function(){
 		infowindow.setContent(this.content);
 		infowindow.open(this.getMap(), this);
 	});
-
-	// render polyline
-	var path = [
-		{lat: lat, lng: lng},
-		{lat: closest[0]['geometry']['coordinates'][1],
-		 lng: closest[0]['geometry']['coordinates'][0]}
-	];
-
-	var polyline = new google.maps.Polyline({
-		path: path,
-		geodesic: true,
-		strokeColor: '#9b54de',
-		strokeOpacity: 1.0,
-		strokeWeight: 7
-	});
-
-	polyline.setMap(map);
 }
 
 Number.prototype.toRad = function() {
    return this * Math.PI / 180;
 }
 
-function closestLandmark()
-{
-	var shortest = 0;
-	var shortest_haversine = 1000;
-	for (var i = 0; i < messageData['landmarks'].length; i++) {
-		_lat = messageData['landmarks'][i]['geometry']['coordinates'][1];
-		_lng = messageData['landmarks'][i]['geometry']['coordinates'][0];
+// function closestLandmark()
+// {
+// 	var shortest = 0;
+// 	var shortest_haversine = 1000;
+// 	for (var i = 0; i < messageData['landmarks'].length; i++) {
+// 		_lat = messageData['landmarks'][i]['geometry']['coordinates'][1];
+// 		_lng = messageData['landmarks'][i]['geometry']['coordinates'][0];
 
-		temp = haversine(_lat,_lng);
-		if (temp < shortest_haversine) {
-			shortest = i;
-			shortest_haversine = temp;
-		}
-	}
-	return [messageData['landmarks'][shortest], shortest_haversine]
-}
+// 		temp = haversine(_lat,_lng);
+// 		if (temp < shortest_haversine) {
+// 			shortest = i;
+// 			shortest_haversine = temp;
+// 		}
+// 	}
+// 	return [messageData['landmarks'][shortest], shortest_haversine]
+// }
 
-// rounded to thousandths place
-function haversine(destLat, destLng) {
-	var lat2 = destLat; 
-	var lon2 = destLng; 
-	var lat1 = lat; 
-	var lon1 = lng; 
+// // rounded to thousandths place
+// function haversine(destLat, destLng) {
+// 	var lat2 = destLat; 
+// 	var lon2 = destLng; 
+// 	var lat1 = lat; 
+// 	var lon1 = lng; 
 
-	var R = 3958.756; // miles
-	var x1 = lat2-lat1;
-	var dLat = x1.toRad();  
-	var x2 = lon2-lon1;
-	var dLon = x2.toRad();  
-	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-	                Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
-	                Math.sin(dLon/2) * Math.sin(dLon/2);  
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	var d = R * c; 
+// 	var R = 3958.756; // miles
+// 	var x1 = lat2-lat1;
+// 	var dLat = x1.toRad();  
+// 	var x2 = lon2-lon1;
+// 	var dLon = x2.toRad();  
+// 	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+// 	                Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+// 	                Math.sin(dLon/2) * Math.sin(dLon/2);  
+// 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+// 	var d = R * c; 
 
-	return Number((d).toFixed(3));
-}
+// 	return Number((d).toFixed(3));
+// }
