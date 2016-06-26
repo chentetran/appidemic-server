@@ -15,14 +15,11 @@ function init()
 			function(position) {
 				lat = position.coords.latitude;
 				lng = position.coords.longitude;
-				console.log(lat);
-				console.log(lng);
 				renderMap();
 			});
 	}
 	else {
-		alert("Your browser does not support location");
-		renderMap();
+		alert("Your browser doesn't support location");
 	}
 }
 
@@ -40,8 +37,9 @@ function renderMap()
 	map = new google.maps.Map(document.getElementById("map"), options);
 	map.panTo(me);
 	marker = new google.maps.Marker({
-		position: me
+		position: me,
 	});
+	marker.content = "You are here";
 	marker.setMap(map);
 
 	google.maps.event.addListener(marker, 'click', function(){
