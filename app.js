@@ -152,4 +152,16 @@ app.post('/sendLocation', function(request, response) {
   });
 });
 
+app.get('/users.json', function(request, response) {
+  // allow cross-origin resource sharing
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  db.collection('users').find().toArray(function(err, usersArr) {
+    if (err) return response.send('Something went wrong');
+
+    response.send(usersArr);
+  });
+});
+
 app.listen(process.env.PORT || 3000);
