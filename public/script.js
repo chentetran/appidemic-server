@@ -11,77 +11,11 @@ var options = {
 					center: me,
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 			  };
-
-// request.open("POST", "https://pumpkin-tart-22013.herokuapp.com/sendLocation", true);
-// request.onreadystatechange = parse;
-
-// function parse()
-// {
-// 	if (request.readyState == 4 && request.status == 200) {
-// 		messageData = JSON.parse(request.responseText);
-// 		render_others();
-// 		render_landmarks();
-// 		renderMap();
-// 	}
-// 	else if (request.readyState == 4 && request.status != 200) {
-// 		alert("Request status not good!")
-// 	}
-// }
-
-// function render_others()
-// {
-// 	img = 'TwoD.png';
-// 	for (var i = 0; i < messageData["people"].length; i++) {
-// 		name = messageData['people'][i]["login"]
-// 		_lat = messageData["people"][i]["lat"];
-// 		_lng = messageData["people"][i]["lng"];
-// 		pos = new google.maps.LatLng(_lat,_lng);
-// 		marker = new google.maps.Marker({
-// 			position: pos,
-// 			title: name,
-// 			icon: img
-// 		});
-// 		marker.content = "<b>" + name + "</b></br>" + haversine(_lat,_lng) + " miles away";
-
-// 		marker.setMap(map);
-
-// 		google.maps.event.addListener(marker, 'click', function() {
-// 			infowindow.setContent(this.content);
-// 			infowindow.open(this.getMap(), this);
-// 		});
-// 	}
-// }
-
-// function render_landmarks()
-// {	
-// 	img = 'chipmarker.png'
-// 	for (var i = 0; i < messageData['landmarks'].length; i++) {
-// 		details = messageData['landmarks'][i]['properties']['Details'];
-		
-// 		pos = messageData['landmarks'][i]['geometry']['coordinates'];
-
-// 		pos = new google.maps.LatLng(pos[1],pos[0]);
-
-// 		marker = new google.maps.Marker({
-// 			position: pos,
-// 			icon: img
-// 		});
-// 		marker.content = details;
-
-// 		marker.setMap(map);
-
-// 		google.maps.event.addListener(marker, 'click', function() {
-// 			infowindow.setContent(this.content);
-// 			infowindow.open(this.getMap(), this);
-// 		});
-// 	}
-// }
-
-
+			  
 function init()
 {
-	map = new google.maps.Map(document.getElementById("map"), options);
 	getMyLocation();
+	map = new google.maps.Map(document.getElementById("map"), options);
 
 };
 
@@ -92,8 +26,6 @@ function getMyLocation() {
 			function(position) {
 				lat = position.coords.latitude;
 				lng = position.coords.longitude;
-				// request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				// request.send("login=IGNACIO_BOWMAN&lat=" + lat + "&lng=" + lng);
 			});
 	}
 	else {
