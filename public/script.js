@@ -72,6 +72,30 @@ function renderMap()
 			icon: healthyImg
 			});
 		}
+		
+
+		// On click, display radius of infection
+		// and statistics
+		google.maps.event.addListener(marker, 'click', function() {
+			// infowindow.setContent(this.content);
+			// infowindow.open(this.getMap(), this);
+
+			var panel = document.getElementById('panel');
+
+			var sunCircle = {
+			strokeColor: "#c3fc49",
+	        strokeOpacity: 0.8,
+	        strokeWeight: 2,
+	        fillColor: "#c3fc49",
+	        fillOpacity: 0.35,
+	        map: map,
+	        center: pos,
+	        radius: 15000 // in meters
+			};
+			infectionRadius = new google.maps.Circle(sunCircle);
+			infectionRadius.bindTo('center', this, 'position');
+		});
+
 		marker.setMap(map);
 	}
 
