@@ -17,16 +17,28 @@ body {
 
 #panel {
 	height: 100%;
-	position:relative;
-	left: 75%;  /* adjust value accordingly */
-	visibility: hidden;
+	width: 25%;
+	position:absolute;
+	left: 75%;
+	display: none;
+	background-color/**/: rgba(0, 0, 0, .65);
+    background-image/**/: none;
+    filter: alpha(opacity=50);
+    text-align: center;
+    color: #fff;
+    font-size: 125%;
 }
 
-/*Cross browser transparency*/
-.dropSheet
-{
-    background-color/**/: #000000;
-    background-image/**/: none;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+#infected {
+	font-weight: bold;
+}
+
+.title {
+	text-align: center;
+	display: inline;
+} 
+
+.content {
+	text-align: left;
+	margin-left: 15px;
 }

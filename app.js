@@ -76,7 +76,7 @@ app.post('/sendLocation', function(request, response) {
   // Insert or update user location
   // Initializes "infected" to false if inserted
   // Searches for other users within var radius
-  db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false}}, {upsert: true}, function(err, result) {
+  db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false, "numInfected":0}}, {upsert: true}, function(err, result) {
     db.collection('users').find({id:id}).toArray(function(err, user) {
 
 
@@ -116,7 +116,8 @@ app.post('/sendLocation', function(request, response) {
               if (numInfected === 0) {      // case 1
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
-                // TODO: add numInfected as an entry in the user doc on DB
+                // increment number of users infected
+                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}});
                 return response.send({result:2, message:"You infected " + numInfected + " people!", numInfected:numInfected});
               }
             });
@@ -139,6 +140,9 @@ app.post('/sendLocation', function(request, response) {
             }).toArray(function(err, usersNearbyArr) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (usersNearbyArr[i].infected) {
+                  // increase spreader's numInfected
+                  db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
+
                   userCursor.update({id:id}, {$set: {infected: true}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }

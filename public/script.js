@@ -45,7 +45,7 @@ function renderMap()
 	me = new google.maps.LatLng(lat, lng);
 	infowindow = new google.maps.InfoWindow();
 	options = {
-					zoom: 7,
+					zoom: 11,
 					center: me,
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 			  };
@@ -61,11 +61,12 @@ function renderMap()
 		pos = messageData[i]['geometry']['coordinates'];
 		pos = new google.maps.LatLng(pos[1], pos[0]);
 
-		if (messageData[i].infected) {
+		var infected = messageData[i].infected;
+		if (infected) {
 			marker = new google.maps.Marker({
-			position: pos,
-			icon: infectedImg
-		});
+				position: pos,
+				icon: infectedImg
+			});
 		} else {
 			marker = new google.maps.Marker({
 			position: pos,
@@ -73,26 +74,36 @@ function renderMap()
 			});
 		}
 		
-
+		infectionRadius = new google.maps.Circle({
+			strokeColor: "#ff0000",
+	        strokeOpacity: 0.25,
+	        strokeWeight: 2,
+	        fillColor: "#ff0000",
+	        fillOpacity: .15,
+	        map: map,
+	        radius: 100 // in meters
+		});
 		// On click, display radius of infection
 		// and statistics
 		google.maps.event.addListener(marker, 'click', function() {
+
 			// infowindow.setContent(this.content);
 			// infowindow.open(this.getMap(), this);
 
+			// Show right panel & statistics
 			var panel = document.getElementById('panel');
+			panel.style.display = 'inline';
+			var infectedText = document.getElementById('infected');
+			if (infected) {
+				infectedText.innerHTML = "INFECTED";
+				infectedText.style.color = "#ff0000";
+			} else {
+				infectedText.innerHTML = "HEALTHY";
+				infectedText.style.color = "#00ff00";
+			}
 
-			var sunCircle = {
-			strokeColor: "#c3fc49",
-	        strokeOpacity: 0.8,
-	        strokeWeight: 2,
-	        fillColor: "#c3fc49",
-	        fillOpacity: 0.35,
-	        map: map,
-	        center: pos,
-	        radius: 15000 // in meters
-			};
-			infectionRadius = new google.maps.Circle(sunCircle);
+			// Show radius of infection
+			infectionRadius.center = pos;
 			infectionRadius.bindTo('center', this, 'position');
 		});
 
