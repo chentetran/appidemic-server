@@ -73,6 +73,8 @@ function renderMap()
 			icon: healthyImg
 			});
 		}
+		marker.numInfected = messageData[i].numInfected;
+
 		
 		infectionRadius = new google.maps.Circle({
 			strokeColor: "#ff0000",
@@ -101,6 +103,7 @@ function renderMap()
 				infectedText.innerHTML = "HEALTHY";
 				infectedText.style.color = "#00ff00";
 			}
+			document.getElementById('numInfected').innerHTML = this.numInfected;
 
 			// Show radius of infection
 			infectionRadius.center = pos;
