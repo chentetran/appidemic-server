@@ -168,7 +168,7 @@ app.get('/stats.json', function(request, response) {
     // like time since first infection, total number of users, num infected, etc
     db.collection('users').count({}, function(err, numUsers) {
       db.collection('users').count({infected:true}, function(err, numInfected) {
-        response.send({usersArr, numUsers: numUsers, numInfected: numInfected});
+        response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected});
       });
     });
 
