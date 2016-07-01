@@ -8,7 +8,7 @@ var messageData;
 var options;
 
 var request = new XMLHttpRequest();
-request.open("GET", "https://appidemic.herokuapp.com/users.json", true);
+request.open("GET", "https://appidemic.herokuapp.com/stats.json", true);
 request.onreadystatechange = parse;
 
 function parse() {
@@ -17,6 +17,7 @@ function parse() {
 		renderMap();
 
 	} else if (request.readyState == 4 && request.status != 200) {
+		console.log(messageData);
 		alert('Unable to load users');
 	}
 }
@@ -88,13 +89,7 @@ function renderMap()
 		// On click, display radius of infection
 		// and statistics
 		google.maps.event.addListener(marker, 'click', function() {
-
-			// infowindow.setContent(this.content);
-			// infowindow.open(this.getMap(), this);
-
-			// Show right panel & statistics
-			var panel = document.getElementById('panel');
-			panel.style.display = 'inline';
+			// Show statistics in right panel
 			var infectedText = document.getElementById('infected');
 			if (infected) {
 				infectedText.innerHTML = "INFECTED";

@@ -156,7 +156,7 @@ app.post('/sendLocation', function(request, response) {
   });
 });
 
-app.get('/users.json', function(request, response) {
+app.get('/stats.json', function(request, response) {
   // allow cross-origin resource sharing
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -164,7 +164,15 @@ app.get('/users.json', function(request, response) {
   db.collection('users').find().toArray(function(err, usersArr) {
     if (err) return response.send('Something went wrong');
 
-    response.send(usersArr);
+    // TODO: send statistics with usersArr
+    // like time since first infection, total number of users, num infected, etc
+    db.collection('users').count({}, function(err, numUsers) {
+      db.collection('users').count({infected:true}, function(err, numInfected) {
+        var responseObj = {usersArr, numUsers: numUsers, numInfected: numInfected};
+        response.send(responseObj);
+      });
+    });
+
   });
 });
 

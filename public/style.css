@@ -20,13 +20,30 @@ body {
 	width: 25%;
 	position:absolute;
 	left: 75%;
-	display: none;
+	display: inline;
 	background-color/**/: rgba(0, 0, 0, .65);
     background-image/**/: none;
     filter: alpha(opacity=50);
     text-align: center;
     color: #fff;
     font-size: 125%;
+}
+
+#timer {
+	bottom: .5%;
+	left: .5%;
+	width: 100%;
+	position:absolute;
+	display: inline;
+	color: #fff;
+	font-size: 200%;
+	font-weight: bold;
+	text-shadow:
+    -4px -4px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;  
+
 }
 
 #infected {
