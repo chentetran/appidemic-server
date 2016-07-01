@@ -14,12 +14,18 @@ request.onreadystatechange = parse;
 function parse() {
 	if (request.readyState == 4 && request.status == 200) {
 		messageData = JSON.parse(request.responseText);
+		displayStats();
 		renderMap();
 
 	} else if (request.readyState == 4 && request.status != 200) {
-		console.log(messageData);
 		alert('Unable to load users');
 	}
+}
+
+function displayStats() {
+	var totalInfected = document.getElementById('totalInfected').innerHTML = messageData.numInfected;
+	var totalUsers = document.getElementById('totalUsers').innerHTML = messageData.numUsers;
+	document.getElementById('percentInfected').innerHTML = totalInfected/totalUsers * 100;
 }
 
 function init()
@@ -58,24 +64,28 @@ function renderMap()
 	var healthyImg = 'healthy.png';
 	var infectedImg = 'biohazard_location.png';
 	var pos;
-	for (var i = 0; i < messageData.length; i++) {
-		pos = messageData[i]['geometry']['coordinates'];
+	var usersArr = messageData.usersArr;
+	for (var i = 0; i < usersArr.length; i++) {
+		pos = usersArr[i]['geometry']['coordinates'];
 		pos = new google.maps.LatLng(pos[1], pos[0]);
 
-		var infected = messageData[i].infected;
+		var infected = usersArr[i].infected;
 		if (infected) {
 			marker = new google.maps.Marker({
 				position: pos,
 				icon: infectedImg
 			});
+			var dateInfected = document.getElementById('dateInfected');
+			dateInfected.style.display = "inline";
+			dateInfected.innerHTML = usersArr[i].dateInfected;
+
 		} else {
 			marker = new google.maps.Marker({
 			position: pos,
 			icon: healthyImg
 			});
 		}
-		marker.numInfected = messageData[i].numInfected;
-
+		marker.numInfected = usersArr[i].numInfected;
 		
 		infectionRadius = new google.maps.Circle({
 			strokeColor: "#ff0000",
@@ -90,6 +100,7 @@ function renderMap()
 		// and statistics
 		google.maps.event.addListener(marker, 'click', function() {
 			// Show statistics in right panel
+			document.getElementById('userStats').style.display = 'inline';
 			var infectedText = document.getElementById('infected');
 			if (infected) {
 				infectedText.innerHTML = "INFECTED";

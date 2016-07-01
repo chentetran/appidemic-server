@@ -56,15 +56,11 @@ app.post('/sendLocation', function(request, response) {
   if (!id || !lat || !lng) {
   	return response.send({result:5, message: "Missing information"});
   }
-
-  console.log("id: " + id);
-  console.log("lat: " +lat);
-  console.log("lng: " + lng);
-
   // order must be longitude, latitude
   var toInsert = {
   	id: id,
   	date: date,
+    dateInfected: null,
     geometry: {
       type: "Point",
       coordinates: [
@@ -117,7 +113,8 @@ app.post('/sendLocation', function(request, response) {
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
                 // increment number of users infected
-                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}});
+                var dateInfected = new Date();
+                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}, $set: {"dateInfected":dateInfected}});
                 return response.send({result:2, message:"You infected " + numInfected + " people!", numInfected:numInfected});
               }
             });

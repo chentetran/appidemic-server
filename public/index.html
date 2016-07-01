@@ -17,14 +17,22 @@
 		<h1 class="title">Info</h1>
 		<br>
 		<div class="content">
-			<p id="infected"></p>
-			<p>Infected <span id="numInfected"></span> people</p>
+			<p><span id="totalInfected" class="bigNumber red"></span> users infected (<span id="percentInfected"></span>%)</p>
+			<p><span id="totalUsers" class="bigNumber green"></span> total users</p>
+
+			<hr>
+
+			<div id="userStats">
+				<p id="infected"></p>
+				<p>Infected <span id="numInfected" class="bigNumber red"></span> people</p>
+				<p id="dateInfected"></p>
+			</div>
 		</div>
 		
 	</div>
 
 	<div id="info">
-		<span id="timer"><span id="time"> days since first infection</span></span>
+		<span id="timer"><span id="time"></span> days since first infection</span>
 	</div>
 
 </body>

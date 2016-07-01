@@ -46,8 +46,28 @@ body {
 
 }
 
+.red {
+	color: red;
+}
+
+.green {
+	color: #98FB98;
+}
+
+.bigNumber {
+	font-size: 150%;
+}
+
+#userStats {
+	display: none;
+}
+
 #infected {
 	font-weight: bold;
+}
+
+#dateInfected {
+	display: none;
 }
 
 .title {
@@ -58,4 +78,5 @@ body {
 .content {
 	text-align: left;
 	margin-left: 15px;
+	margin-right: 15px;
 }
