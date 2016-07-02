@@ -165,8 +165,7 @@ app.get('/stats.json', function(request, response) {
     db.collection('users').count({}, function(err, numUsers) {
       db.collection('users').count({infected:true}, function(err, numInfected) {
         db.collection('dateStart').find().toArray(function(err, dateArr) {
-          console.log(dateArr[0]);
-          response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected});
+          response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected, dateStart: dateArr[0].dateStart});
           
         });
       });
