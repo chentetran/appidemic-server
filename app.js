@@ -113,8 +113,7 @@ app.post('/sendLocation', function(request, response) {
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
                 // increment number of users infected
-                var dateInfected = new Date();
-                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}, $set: {"dateInfected":dateInfected}});
+                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}, $set: {"dateInfected":date}});
                 return response.send({result:2, message:"You infected " + numInfected + " people!", numInfected:numInfected});
               }
             });
@@ -140,7 +139,7 @@ app.post('/sendLocation', function(request, response) {
                   // increase spreader's numInfected
                   db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
 
-                  userCursor.update({id:id}, {$set: {infected: true}});
+                  userCursor.update({id:id}, {$set: {infected: true, dateInfected:date}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
               }
