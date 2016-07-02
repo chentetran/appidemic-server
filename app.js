@@ -181,7 +181,7 @@ app.post('/resetDate', function(request, response) {
   response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
   var date = new Date();
-  db.collection('dateStart').update({id:dateStart}, {$set:{dateStart:date}}, {upsert: true}, function(request, response) {
+  db.collection('dateStart').update({id:"dateStart"}, {$set:{dateStart:date}}, {upsert: true}, function(request, response) {
     response.send('All set');
   });
 
