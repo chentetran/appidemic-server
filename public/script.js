@@ -27,8 +27,9 @@ function displayStats() {
 	var totalUsers = document.getElementById('totalUsers').innerHTML = messageData.numUsers;
 	document.getElementById('percentInfected').innerHTML = totalInfected/totalUsers * 100;
 
+	// display elapsed time since first infection
 	var today = new Date();
-	var dateStart = messageData.dateStart;
+	var dateStart = new Date(messageData.dateStart);
 	var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
 	document.getElementById('time').innerHTML = Math.round(Math.abs((today.getTime() - dateStart.getTime())/(oneDay)));
 }
