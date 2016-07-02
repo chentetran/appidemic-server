@@ -164,11 +164,28 @@ app.get('/stats.json', function(request, response) {
     // like time since first infection, total number of users, num infected, etc
     db.collection('users').count({}, function(err, numUsers) {
       db.collection('users').count({infected:true}, function(err, numInfected) {
-        response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected});
+        db.collection('dateStart').find().toArray(function(err, dateArr) {
+          dateArr[0]
+          response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected});
+          
+        });
       });
     });
 
   });
+});
+
+app.post('/resetDate', function(request, response) {
+  // allow cross-origin resource sharing
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  var date = new Date();
+  db.collection('dateStart').update({id:dateStart}, {$set:{dateStart:date}}, {upsert: true}, function(request, response) {
+    response.send('All set');
+  });
+
+
 });
 
 app.listen(process.env.PORT || 3000);
