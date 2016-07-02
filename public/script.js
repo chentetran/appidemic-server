@@ -26,6 +26,11 @@ function displayStats() {
 	var totalInfected = document.getElementById('totalInfected').innerHTML = messageData.numInfected;
 	var totalUsers = document.getElementById('totalUsers').innerHTML = messageData.numUsers;
 	document.getElementById('percentInfected').innerHTML = totalInfected/totalUsers * 100;
+
+	var today = new Date();
+	var dateStart = messageData.dateStart;
+	var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+	document.getElementById('time').innerHTML = diffDays = Math.round(Math.abs((today.getTime() - dateStart.getTime())/(oneDay)));
 }
 
 function init()
