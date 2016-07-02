@@ -30,7 +30,7 @@ function displayStats() {
 	var today = new Date();
 	var dateStart = messageData.dateStart;
 	var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-	document.getElementById('time').innerHTML = diffDays = Math.round(Math.abs((today.getTime() - dateStart.getTime())/(oneDay)));
+	document.getElementById('time').innerHTML = Math.round(Math.abs((today.getTime() - dateStart.getTime())/(oneDay)));
 }
 
 function init()
