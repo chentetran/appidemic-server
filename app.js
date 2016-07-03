@@ -63,7 +63,7 @@ app.post('/sendLocation', function(request, response) {
   var lat = Number(request.body.lat);
   var lng = Number(request.body.lng);
   var date = new Date();
-  var dateString = moment().format("MMM Do YYYY, h:mm:ss a"); // "February 14th 2010, 3:25:50 pm"
+  var dateString = moment().format("M / D / YYYY, h:mma");
 
 
   if (!id || !lat || !lng) {
