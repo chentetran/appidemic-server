@@ -34,10 +34,7 @@ function displayStats() {
 	document.getElementById('time').innerHTML = Math.round(Math.abs((today.getTime() - dateStart.getTime())/(oneDay)));
 }
 
-function init()
-{
-	
-
+function init() {
 	// Get user's location to center map
 	if (navigator.geolocation) { // if browser supported
 		navigator.geolocation.getCurrentPosition( 
