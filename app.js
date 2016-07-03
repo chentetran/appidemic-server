@@ -1,6 +1,7 @@
 // Initialization
 var express = require('express');
 var bodyParser = require('body-parser'); // Required if we need to use HTTP query or post parameters
+var moment = require('moment'); 	// cleaning up Dates
 
 var server = "http://appidemic.herokuapp.com/";
 // var server = "http://localhost:3000/"
@@ -18,6 +19,16 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 // radius of infection in meters
 var radius = 100;
+
+
+app.get('/date', function(req, res) {
+	var date = new Date();
+	console.log(date);
+
+	var mom =moment().format("MMMM Do YYYY, h:mm:ss a"); // "Sunday, February 14th 2010, 3:25:50 pm"
+	console.log(mom);
+	res.send();
+});
 
 // homepage
 app.get('/', function(request, response) {
@@ -52,6 +63,8 @@ app.post('/sendLocation', function(request, response) {
   var lat = Number(request.body.lat);
   var lng = Number(request.body.lng);
   var date = new Date();
+  var dateString = moment().format("MMM Do YYYY, h:mm:ss a"); // "February 14th 2010, 3:25:50 pm"
+
 
   if (!id || !lat || !lng) {
   	return response.send({result:5, message: "Missing information"});
@@ -106,14 +119,14 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (!usersNearbyArr[i].infected) { // user is healthy -> infect them
                   numInfected++;
-                  db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true}});
+                  db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true, dateInfected:dateString}});
                 }
               }
               if (numInfected === 0) {      // case 1
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
                 // increment number of users infected
-                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}, $set: {"dateInfected":date}});
+                db.collection('users').update({id:id}, {$inc: {"numInfected" : numInfected}});
                 return response.send({result:2, message:"You infected " + numInfected + " people!", numInfected:numInfected});
               }
             });
@@ -139,7 +152,7 @@ app.post('/sendLocation', function(request, response) {
                   // increase spreader's numInfected
                   db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
 
-                  userCursor.update({id:id}, {$set: {infected: true, dateInfected:date}});
+                  userCursor.update({id:id}, {$set: {infected: true, dateInfected:dateString}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
               }
@@ -164,7 +177,7 @@ app.get('/stats.json', function(request, response) {
     db.collection('users').count({}, function(err, numUsers) {
       db.collection('users').count({infected:true}, function(err, numInfected) {
         db.collection('dateStart').find().toArray(function(err, dateArr) {
-          response.send({usersArr:usersArr, numUsers: numUsers, numInfected: numInfected, dateStart: dateArr[0].dateStart});
+          response.send({usersArr: usersArr, numUsers: numUsers, numInfected: numInfected, dateStart: dateArr[0].dateStart});
           
         });
       });

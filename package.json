@@ -9,6 +9,7 @@
   "dependencies": {
     "body-parser": "latest",
     "express": "latest",
+    "moment": "^2.13.0",
     "mongodb": "latest"
   },
   "engines": {

@@ -109,7 +109,7 @@ function renderMap()
 				infectedText.innerHTML = "INFECTED";
 				infectedText.style.color = "#ff0000";
 
-				dateInfectedText.innerHTML = this.dateInfected;
+				dateInfectedText.innerHTML = ' on ' + this.dateInfected;
 				dateInfectedText.style.display = 'inline';
 			} else {
 				infectedText.innerHTML = "HEALTHY";
