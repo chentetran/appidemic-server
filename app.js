@@ -1,6 +1,7 @@
 // Initialization
 var express = require('express');
 var bodyParser = require('body-parser'); // Required if we need to use HTTP query or post parameters
+var moment = require('moment'); 	// cleaning up Dates
 
 var server = "http://appidemic.herokuapp.com/";
 // var server = "http://localhost:3000/"
@@ -52,6 +53,8 @@ app.post('/sendLocation', function(request, response) {
   var lat = Number(request.body.lat);
   var lng = Number(request.body.lng);
   var date = new Date();
+  var dateString = moment().format("M / D / YYYY, h:mma");
+  console.log(dateString);
 
 
   if (!id || !lat || !lng) {
@@ -107,10 +110,11 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (!usersNearbyArr[i].infected) { // user is healthy -> infect them
                   numInfected++;
-                  db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true, "dateInfected":date}});
+                  db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true, "dateInfected":dateString}});
                 }
               }
               if (numInfected === 0) {      // case 1
+              	console.log(dateString);
               	console.log('1: ' +  user[0].id + " didn't infect anyone");
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
@@ -142,7 +146,7 @@ app.post('/sendLocation', function(request, response) {
                   // increase spreader's numInfected
                   db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
 
-                  userCursor.update({id:id}, {$set: {infected: true, "dateInfected":date}});
+                  userCursor.update({id:id}, {$set: {infected: true, "dateInfected":dateString}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
               }
