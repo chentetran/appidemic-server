@@ -157,11 +157,10 @@ app.get('/stats.json', function(request, response) {
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-  db.collection('users').find().toArray(function(err, usersArr) {
+  db.collection('users').find({}, {'_id':false, 'id':false}).toArray(function(err, usersArr) {
     if (err) return response.send('Something went wrong');
 
-    // TODO: send statistics with usersArr
-    // like time since first infection, total number of users, num infected, etc
+    // TODO: remove IDs from json objects to allow anonymity
     db.collection('users').count({}, function(err, numUsers) {
       db.collection('users').count({infected:true}, function(err, numInfected) {
         db.collection('dateStart').find().toArray(function(err, dateArr) {

@@ -76,12 +76,10 @@ function renderMap()
 		if (infected) {
 			marker = new google.maps.Marker({
 				position: pos,
-				icon: infectedImg
+				icon: infectedImg,
+				infected: true,
+				dateInfected: usersArr[i].dateInfected
 			});
-			var dateInfected = document.getElementById('dateInfected');
-			dateInfected.style.display = "inline";
-			dateInfected.innerHTML = usersArr[i].dateInfected;
-
 		} else {
 			marker = new google.maps.Marker({
 			position: pos,
@@ -105,12 +103,20 @@ function renderMap()
 			// Show statistics in right panel
 			document.getElementById('userStats').style.display = 'inline';
 			var infectedText = document.getElementById('infected');
-			if (infected) {
+			var dateInfectedText = document.getElementById('dateInfected');
+
+			if (this.infected) {
 				infectedText.innerHTML = "INFECTED";
 				infectedText.style.color = "#ff0000";
+
+				dateInfectedText.innerHTML = this.dateInfected;
+				dateInfectedText.style.display = 'inline';
 			} else {
 				infectedText.innerHTML = "HEALTHY";
-				infectedText.style.color = "#00ff00";
+				infectedText.style.color = "#98FB98";
+
+				dateInfectedText.style.display = 'none';
+
 			}
 			document.getElementById('numInfected').innerHTML = this.numInfected;
 
