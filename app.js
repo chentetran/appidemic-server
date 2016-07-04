@@ -53,9 +53,6 @@ app.post('/sendLocation', function(request, response) {
   var lat = Number(request.body.lat);
   var lng = Number(request.body.lng);
   var date = new Date();
-  var dateString = moment().format("M / D / YYYY, h:mma");
-  console.log(dateString);
-
 
   if (!id || !lat || !lng) {
   	return response.send({result:5, message: "Missing information"});
@@ -110,11 +107,11 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (!usersNearbyArr[i].infected) { // user is healthy -> infect them
                   numInfected++;
+                  var dateString = moment().format("M / D / YYYY, h:mma");
                   db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true, "dateInfected":dateString}});
                 }
               }
               if (numInfected === 0) {      // case 1
-              	console.log(dateString);
               	console.log('1: ' +  user[0].id + " didn't infect anyone");
                 return response.send({result:1, message:"You didn't infect anyone"});
               } else {                      // case 2
@@ -146,6 +143,7 @@ app.post('/sendLocation', function(request, response) {
                   // increase spreader's numInfected
                   db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
 
+                  var dateString = moment().format("M / D / YYYY, h:mma");
                   userCursor.update({id:id}, {$set: {infected: true, "dateInfected":dateString}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
