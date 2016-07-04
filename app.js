@@ -23,7 +23,7 @@ var radius = 100;
 // homepage
 app.get('/', function(request, response) {
 	response.set('Content-Type', 'text/html');
-  return response.sendFile(__dirname + '/public/index.html');
+  	return response.sendFile(__dirname + '/public/index.html');
 });
 
 app.post('/checkInfection', function(request, response) {
@@ -84,8 +84,8 @@ app.post('/sendLocation', function(request, response) {
       // Four cases:
       // 1. User is infected and infected nobody
       // 2. User is infected and infected people. Get a count.
-      // 3. User is healthy and got infected. V
-      // 4. User is healthy and didn't get infected. V
+      // 3. User is healthy and got infected. 
+      // 4. User is healthy and didn't get infected. 
 
 
 
