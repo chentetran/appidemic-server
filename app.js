@@ -143,11 +143,14 @@ app.post('/sendLocation', function(request, response) {
                   // increase spreader's numInfected
                   db.collection('users').update({id:usersNearbyArr[i].id}, {$inc: {"numInfected" : 1}});
 
+                  console.log("3: " + usersNearbyArr[i].id + " infected " + id);
+
                   var dateString = moment().format("M / D / YYYY, h:mma");
                   userCursor.update({id:id}, {$set: {infected: true, "dateInfected":dateString}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
               }
+              console.log('4: ' + id + " wasn't infected");
               return response.send({result:4, message:"You are still healthy"}); // case 4
             });
           });
