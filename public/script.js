@@ -55,7 +55,7 @@ function renderMap()
 	me = new google.maps.LatLng(lat, lng);
 	infowindow = new google.maps.InfoWindow();
 	options = {
-					zoom: 11,
+					zoom: 17,
 					center: me,
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 			  };
