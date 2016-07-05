@@ -3,9 +3,6 @@ var express = require('express');
 var bodyParser = require('body-parser'); // Required if we need to use HTTP query or post parameters
 var moment = require('moment'); 	// cleaning up Dates
 
-var server = "http://appidemic.herokuapp.com/";
-// var server = "http://localhost:3000/"
-
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
