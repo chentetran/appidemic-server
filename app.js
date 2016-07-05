@@ -50,6 +50,8 @@ app.post('/sendLocation', function(request, response) {
   var lat = Number(request.body.lat);
   var lng = Number(request.body.lng);
   var date = new Date();
+  var dateString = moment().format("M / D / YYYY, h:mma");
+
 
   if (!id || !lat || !lng) {
   	return response.send({result:5, message: "Missing information"});
@@ -58,7 +60,6 @@ app.post('/sendLocation', function(request, response) {
   var toInsert = {
   	id: id,
   	date: date,
-    dateInfected: null,
     geometry: {
       type: "Point",
       coordinates: [
@@ -70,7 +71,7 @@ app.post('/sendLocation', function(request, response) {
   // Insert or update user location
   // Initializes "infected" to false if inserted
   // Searches for other users within var radius
-  db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false, "numInfected":0}}, {upsert: true}, function(err, result) {
+  db.collection('users').update({id:id}, {$set:toInsert, $setOnInsert: {"infected":false, "numInfected":0, "dateInfected":null}}, {upsert: true}, function(err, result) {
     db.collection('users').find({id:id}).toArray(function(err, user) {
 
 
@@ -104,7 +105,6 @@ app.post('/sendLocation', function(request, response) {
               for (var i=0; i < usersNearbyArr.length; i++) {
                 if (!usersNearbyArr[i].infected) { // user is healthy -> infect them
                   numInfected++;
-                  var dateString = moment().format("M / D / YYYY, h:mma");
                   db.collection('users').update({_id:usersNearbyArr[i]._id}, {$set: {infected: true, "dateInfected":dateString}});
                 }
               }
@@ -142,7 +142,6 @@ app.post('/sendLocation', function(request, response) {
 
                   console.log("3: " + usersNearbyArr[i].id + " infected " + id);
 
-                  var dateString = moment().format("M / D / YYYY, h:mma");
                   userCursor.update({id:id}, {$set: {infected: true, "dateInfected":dateString}});
                   return response.send({result:3, message:"You were infected!"}); // case 3
                 }
